@@ -8,34 +8,37 @@
 
 /* GAME CANVAS START */
 #game_canvas{
-    background-color: black;
+    background-color: rgb(255, 2, 200);
     display: inline-block;
 }
 /* GAME CANVAS END */
 
 /* PACMAN START */
 .pacman{
-    width: 50px;
-    height: 50px;
-    position: relative;
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    z-index: 5;
 }
 
 .pacman > .top,.bottom{
     background-color: rgb(255, 208, 0);
-    height: 50%;
-    width: 100%;
+    height: 25%;
+    width: 50%;
     position: absolute;
 }
 
 .pacman > .top{
-    top: 0;
+    top: 5px;
+    left: 5px;
     border-radius: 100px 100px 0 0;
     transform-origin: center bottom;
     animation: spinTop .5s infinite linear;
 }
 
 .pacman > .bottom{
-    bottom: 0;
+    bottom: 5px;
+    right: 5px;
     border-radius: 0 0 100px 100px;
     transform-origin: center top;
     animation: spinBottom .5s infinite linear;
@@ -43,11 +46,11 @@
 
 .pacman > .eye{
     background-color: rgb(139, 113, 0);
-    width: 18%;
-    height: 18%;
+    width: 9%;
+    height: 9%;
     border-radius: 50%;
-    top: 15%;
-    right: 25%;
+    top: 30%;
+    right: 50%;
     display: inline;
     position: absolute;
     z-index: 2;
@@ -91,6 +94,7 @@
     height: 100%;
     border: 3px double blue;
     position: relative;
+    background-color: rgb(8, 0, 48);
 }
 
 .coin{

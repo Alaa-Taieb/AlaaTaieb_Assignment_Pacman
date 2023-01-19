@@ -200,3 +200,138 @@ document.getElementById('fileInput')
         fr.readAsText(this.files[0]);
         /* textToBoard(fr.result); */
     })
+
+var player = document.querySelector('#player');
+var movementDirection = [0 , 0];        // [1 , 0] = RIGHT , [-1 , 0] = LEFT , [0 , -1] = UP , [0 , 1] = DOWN
+var faceDirection = 'up';
+var playerCoordinates = [2 , 2];             
+var speed = 0.5;
+var lastPressed = '';
+var player_x = 20;
+var player_y = 20;
+var player_size = 20;
+var correction_tolerance = 0.1;
+// The function behind the logic of the game
+function gameLoop(){
+    playerController();
+}
+
+
+// The function behind player controls
+function playerController(){
+    player_x = player_x + movementDirection[0] * speed;
+    player_y = player_y +movementDirection[1] * speed;
+    player.style.transform = `translate(${player_x}px , ${player_y}px)`;
+    switch(faceDirection){
+        case 'right':
+            player.style.transform += 'rotate(0deg)';
+            /* player.querySelector('.eye').style.transform = 'translateY(0px)'; */
+            break;
+        case 'down':
+            player.style.transform += 'rotate(90deg)';
+            /* player.querySelector('.eye').style.transform = 'translateY(0px)'; */
+            break;
+        case 'left':
+            player.style.transform += 'rotate(180deg)';
+            /* player.querySelector('.eye').style.transform = 'translateY(3.5px)'; */
+            break;
+        case 'up':
+            player.style.transform += 'rotate(270deg)';
+            /* player.querySelector('.eye').style.transform = 'translateY(3.5px)'; */
+    }
+    
+    // An event handler of keypresses
+    document.onkeydown = function(evt){
+        // Using Switch Case to check whether to register the key press or not
+        // Only register if the key press won't result in the player going through walls
+        // EXAMPLE : the player's top column contains a wall and the player pressed the 'w' key 
+        // in this case the the event handler won't register the key pressed
+        // Registering the key press by saving the key to the lastPressed variable
+        switch(evt.key){
+            case 'w':
+            if(getColumn(playerCoordinates[0] , playerCoordinates[1] - 1).querySelector('.wall')){
+
+            }else{
+                lastPressed = evt.key;
+            }
+            break;
+        case 'd':
+            if(getColumn(playerCoordinates[0] + 1, playerCoordinates[1]).querySelector('.wall')){
+
+            }else{
+                lastPressed = evt.key;
+            }
+            break;
+        case 's':
+            if(getColumn(playerCoordinates[0] , playerCoordinates[1] + 1).querySelector('.wall')){
+
+            }else{
+                lastPressed = evt.key;
+            }
+            break;
+        case 'a':
+            if(getColumn(playerCoordinates[0] - 1 , playerCoordinates[1]).querySelector('.wall')){
+
+            }else{
+                lastPressed = evt.key;
+            }
+            break;
+        }
+    }
+
+    // Using this switch case and the value of the lastPressed variable we will determine the player's movement direction and the direction he faces
+    // We make sure that the player only turns when he is exactly in the middle of the column to ensure the player's position is always aligned with grid
+    // We also make sure the player stops when he is about to hit a wall
+
+    switch(lastPressed){
+        case 'w':
+            if(player_x % player_size == 0 && player_y % player_size == 0){
+                movementDirection = [0 , -1];
+                faceDirection = 'up';
+                if(getColumn(playerCoordinates[0] , playerCoordinates[1] - 1).querySelector('.wall')){
+                    movementDirection = [0 , 0];
+                    /* player_x = playerCoordinates[0] * player_size/2; */
+                    player_y = (playerCoordinates[1]-1) * player_size;
+                }
+            }
+            break;
+        case 'd':
+            if(player_x % player_size == 0 && player_y % player_size == 0){
+                movementDirection = [0 , 0];
+                faceDirection = 'right';
+                player.style.backgroundColor = 'red';
+                console.log(playerCoordinates);
+                if(getColumn(playerCoordinates[0] + 1, playerCoordinates[1]).querySelector('.wall')){
+                    movementDirection = [0 , 0];
+                    /* player_x = playerCoordinates[0] * player_size/2; */
+                    player_x = (playerCoordinates[0] - 1) * player_size;
+                }else{
+                movementDirection = [1 , 0];
+
+                }
+            }else{
+                player.style.backgroundColor = 'transparent';
+            }
+            break;
+        case 's':
+            if(player_x % player_size == 0 && player_y % player_size == 0)
+            {
+                movementDirection = [0 , 1];
+                faceDirection = 'down';
+                
+            }
+            break;
+        case 'a':
+            if(player_x % player_size == 0 && player_y % player_size == 0){
+                movementDirection = [-1 , 0];
+                faceDirection = 'left';
+                
+            }
+            break;
+    }
+    playerCoordinates[0] = Math.floor(player_x / player_size) + 1;
+    playerCoordinates[1] = Math.floor(player_y / player_size) + 1;
+
+}
+
+setInterval(function ()  {gameLoop()} , GAME_LOOP_INTERVAL);
