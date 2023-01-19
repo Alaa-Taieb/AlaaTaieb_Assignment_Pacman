@@ -139,6 +139,7 @@ body{
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 400px;
 }
 
 .interface_section{
@@ -153,6 +154,14 @@ body{
     padding: 5px;
     font-size: 1rem;
     text-align: center;
+}
+
+.interface_section > p{
+    width: 100%;
+    background-color: white;
+    font-size: 0.5rem;
+    padding: 5px;
+    line-height: 10px;
 }
 
 .info_container{
