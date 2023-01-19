@@ -3,7 +3,7 @@
 const GAME_LOOP_INTERVAL = 20;
 // The game's framerate
 const GAME_FRAME_RATE = 1000 / GAME_LOOP_INTERVAL;
-
+const COIN_CONSUME_SOUND = new Audio('assets/sound_effects/consume_coin.wav');
 // Load the element in which the game will be rendered
 var canvas_element = document.querySelector("#game_canvas");
 
@@ -14,6 +14,12 @@ var game_board = {
     /* Data that is used to construct the game board */
     'board_data' : []           
 }
+
+// Display board data on page
+document.querySelector('#game_width').innerText = game_board.width;
+document.querySelector('#game_height').innerText = game_board.height;
+document.querySelector('#column_size').innerText = game_board.column_size;
+
 // A function that creates the board columns
 function box_board(){
     // Set the game canvas's width to be Horizontal_number_of_columns * Column_width
@@ -205,15 +211,29 @@ var player = document.querySelector('#player');
 var movementDirection = [0 , 0];        // [1 , 0] = RIGHT , [-1 , 0] = LEFT , [0 , -1] = UP , [0 , 1] = DOWN
 var faceDirection = 'up';
 var playerCoordinates = [2 , 2];             
-var speed = 0.5;
+var speed = 2;
 var lastPressed = '';
 var player_x = 20;
 var player_y = 20;
 var player_size = 20;
 var correction_tolerance = 0.1;
+var player_score = 0;
+var player_coins = 0;
+var player_kills = 0;
+var player_moved = false;
+
+// Display game data on page
+document.querySelector('#score').innerText = player_score;
+document.querySelector('#coins').innerText = player_coins;
+document.querySelector('#kills').innerText = player_kills;
+
+
 // The function behind the logic of the game
 function gameLoop(){
-    playerController();
+    player_moved = playerController();
+    if(player_moved){
+        columnController();
+    }
 }
 
 
@@ -297,20 +317,13 @@ function playerController(){
             break;
         case 'd':
             if(player_x % player_size == 0 && player_y % player_size == 0){
-                movementDirection = [0 , 0];
+                movementDirection = [1 , 0];
                 faceDirection = 'right';
-                player.style.backgroundColor = 'red';
-                console.log(playerCoordinates);
                 if(getColumn(playerCoordinates[0] + 1, playerCoordinates[1]).querySelector('.wall')){
                     movementDirection = [0 , 0];
                     /* player_x = playerCoordinates[0] * player_size/2; */
                     player_x = (playerCoordinates[0] - 1) * player_size;
-                }else{
-                movementDirection = [1 , 0];
-
                 }
-            }else{
-                player.style.backgroundColor = 'transparent';
             }
             break;
         case 's':
@@ -318,19 +331,58 @@ function playerController(){
             {
                 movementDirection = [0 , 1];
                 faceDirection = 'down';
-                
+                if(getColumn(playerCoordinates[0], playerCoordinates[1] + 1).querySelector('.wall')){
+                    movementDirection = [0 , 0];
+                    player_y = (playerCoordinates[1] - 1) * player_size;
+                }
             }
             break;
         case 'a':
             if(player_x % player_size == 0 && player_y % player_size == 0){
-                movementDirection = [-1 , 0];
+                movementDirection = [-1 , 0]
                 faceDirection = 'left';
-                
+                if(getColumn(playerCoordinates[0] - 1, playerCoordinates[1]).querySelector('.wall')){
+                    movementDirection = [0 , 0];
+                    player_x = (playerCoordinates[0] - 1) * player_size;
+                }
             }
             break;
     }
-    playerCoordinates[0] = Math.floor(player_x / player_size) + 1;
-    playerCoordinates[1] = Math.floor(player_y / player_size) + 1;
+
+    // A variable that temporarly stores the player coordinates before the new calculation , this we way we know when the player moved on row column system
+    var temp_coordinates = [playerCoordinates[0] , playerCoordinates[1]];
+    // We calculate over which column the player is.
+    playerCoordinates[0] = Math.floor((player_x + player_size/2) / player_size ) + 1;
+    playerCoordinates[1] = Math.floor((player_y + player_size/2) / player_size ) + 1;
+    if(temp_coordinates[0] != playerCoordinates[0] || temp_coordinates[1] != playerCoordinates[1])
+        return true;
+    return false;
+}
+
+// A function that detects what the player is moving on
+function columnController(){
+    // Get the column the player is currently on
+    var col = document.querySelector(`#row_${playerCoordinates[1]}_col_${playerCoordinates[0]}`);
+    // Check if the column has a child
+    if(col.childElementCount > 0){
+        // Get the child element
+        var item = col.children[0];
+        console.log(item);
+        // Check if the child element has a class called 'coin'
+        if(item.classList[0] == 'coin'){
+            // Remove the coin from the board (the player ate it)
+            item.remove();
+            // Play coin eat sound
+            COIN_CONSUME_SOUND.play();
+            // Increase player score by 10
+            player_score += 10;
+            // Increase coins eaten by 1
+            player_coins++;
+            // Update both score and coins display
+            document.querySelector('#score').innerText = player_score;
+            document.querySelector('#coins').innerText = player_coins;
+        }
+    }
 
 }
 

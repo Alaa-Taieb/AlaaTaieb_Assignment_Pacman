@@ -1,9 +1,19 @@
+/* IMPORTS START */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* IMPORTS END */
 /* GLOBAL VALUES START */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+/* BODY START */
+body{
+    display:flex;
+    gap: 5px;
+    font-family: 'Press Start 2P', cursive;
+}
+/* BODY END */
 /* GLOBAL VALUES END */
 
 /* GAME CANVAS START */
@@ -120,3 +130,59 @@
     }
 }
 /* COLUMNS AND ROWS END */
+
+/* INTERFACE START */
+#interface{
+    background-color: black;
+    border: 6px double blue;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.interface_section{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.interface_section > h2{
+    border: 3px double blue;
+    color: blue;
+    padding: 5px;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.info_container{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.info_item{
+    display: flex;
+    font-size: 0.5rem;
+}
+
+.info_name{
+    width: 40%;
+    background-color: white;
+    padding: 5px;
+}
+
+.info_value{
+    width: 60%;
+    padding: 5px;
+    background-color: black;
+    color: white;
+    text-align: right;
+}
+
+#fileInput{
+    background-color: blue;
+    color: #fff;
+    height: 20px;
+}
+/* INTERFACE END */

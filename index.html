@@ -17,8 +17,41 @@
         
     </div>
     <div id="interface">
-        <input type="file" name="file_input" id="fileInput">
-        <div id="output"></div>
+        <div id="board_params" class="interface_section">
+            <h2>Board Info</h2>
+            <div class="info_container">
+                <div class="info_item">
+                    <div class="info_name">Width</div>
+                    <div class="info_value"><span id="game_width"></span> Columns</div>
+                </div>
+                <div class="info_item">
+                    <div class="info_name">Height</div>
+                    <div class="info_value"><span id="game_height"></span> Columns</div>
+                </div>
+                <div class="info_item">
+                    <div class="info_name">Column Size</div>
+                    <div class="info_value"><span id="column_size"></span> px</div>
+                </div>
+            </div>
+            <input type="file" name="file_input" id="fileInput">
+        </div>
+        <div class="interface_section">
+            <h2>Game Info</h2>
+            <div class="info_container">
+                <div class="info_item">
+                    <div class="info_name">Score</div>
+                    <div class="info_value"><span id="score"></span></div>
+                </div>
+                <div class="info_item">
+                    <div class="info_name">Coins</div>
+                    <div class="info_value"><span id="coins"></span></div>
+                </div>
+                <div class="info_item">
+                    <div class="info_name">Kills</div>
+                    <div class="info_value"><span id="kills"></span></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
