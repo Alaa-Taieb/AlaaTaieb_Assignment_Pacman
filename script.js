@@ -1,11 +1,34 @@
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Global Variables
 
 // The game loop call interval in milliseconds
 const GAME_LOOP_INTERVAL = 20;
 // The game's framerate
 const GAME_FRAME_RATE = 1000 / GAME_LOOP_INTERVAL;
 const COIN_CONSUME_SOUND = new Audio('assets/sound_effects/consume_coin.wav');
+var BOARD_SET = false;
 // Load the element in which the game will be rendered
 var canvas_element = document.querySelector("#game_canvas");
+
+
+// This array will hold objects containing information of existing ghosts
+// Ghost Object
+/* 
+var ghost = {
+    'id': '#ghost_1',
+    'x': 0,
+    'y': 0,
+    'board_x': 1,
+    'board_y': 1,
+    'speed': 1,
+    'state': 'wondering',     // wondering => moving randomly | chasing => chasing after the player
+}
+*/
+var ghosts = [];
+
+// Ghost element HTML code
+var ghost_html_code = '<div class="body"></div><div class="tenticals"><div class="tentical"></div><div class="tentical"></div><div class="tentical"></div></div>';
+
 
 var game_board = {
     'width' : 50,        // How many columns on the game board
@@ -15,11 +38,35 @@ var game_board = {
     'board_data' : []           
 }
 
+var player = document.querySelector('#player');
+var movementDirection = [0 , 0];        // [1 , 0] = RIGHT , [-1 , 0] = LEFT , [0 , -1] = UP , [0 , 1] = DOWN
+var faceDirection = 'up';
+var playerCoordinates = [2 , 2];             
+var speed = 2;
+var lastPressed = '';
+var player_x = 20;
+var player_y = 20;
+var player_size = 20;
+var correction_tolerance = 0.1;
+var player_score = 0;
+var player_coins = 0;
+var player_kills = 0;
+var player_moved = false;
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Display board data on page
 document.querySelector('#game_width').innerText = game_board.width;
 document.querySelector('#game_height').innerText = game_board.height;
 document.querySelector('#column_size').innerText = game_board.column_size;
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // A function that creates the board columns
 function box_board(){
     // Set the game canvas's width to be Horizontal_number_of_columns * Column_width
@@ -35,16 +82,21 @@ function box_board(){
         }
     }
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Get a column with it's x , y coordinates
 function getColumn(x , y){
     return document.querySelector(`#row_${y}_col_${x}`);
 }
-box_board();
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
 
 
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // This function set's a specific column to contain a wall
 function addWall(x , y){
     // First We Get the Column
@@ -60,8 +112,12 @@ function addWall(x , y){
         wallGraphicCorrection(x , y);
     }
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Checks for wall neighbours to remove unnecessary borders
 function wallGraphicCorrection(x , y){
     var top = checkTopNeighbour(x , y);         // Gets the top neighbour
@@ -86,7 +142,12 @@ function wallGraphicCorrection(x , y){
     }
 
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Checks if the top neighbour of the column [x , y] contains a wall
 function checkTopNeighbour(x , y){
     // Checks if the referred column is on the top row
@@ -98,7 +159,12 @@ function checkTopNeighbour(x , y){
     }
     return false;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Checks if the bottom neighbour of the column [x , y] contains a wall
 function checkBottomNeighbour(x , y){
     // Checks if the referred column is on the bottom row
@@ -110,7 +176,12 @@ function checkBottomNeighbour(x , y){
     }
     return false;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Checks if the left neighbour of the column [x , y] contains a wall
 function checkLeftNeighbour(x , y){
     // Checks if the referred column is on the left side of the board
@@ -122,7 +193,13 @@ function checkLeftNeighbour(x , y){
     }
     return false;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Checks if the right neighbour of the column [x , y] contains a wall
 function checkRightNeighbour(x , y){
     // Checks if the referred column is on the right side of the board
@@ -134,7 +211,12 @@ function checkRightNeighbour(x , y){
     }
     return false;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // This function set's a specific column to contain a coin
 function addCoin(x , y){
     // First We Get the Column
@@ -149,7 +231,11 @@ function addCoin(x , y){
         column.innerHTML = '<div class="coin"></div>';
     }
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // This function will take a string input and build with it a walls and coins
 function textToBoard(text){
     /* CODES */
@@ -190,44 +276,25 @@ function textToBoard(text){
         x++;
         stringIndex++;
     }
+    BOARD_SET = true;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
-// Loads text files and set's board
-document.getElementById('fileInput')
-    .addEventListener('change', function() {
-        var fr=new FileReader();
-        fr.onload=function(){
-            
-        console.log(fr.result);
-        var text = fr.result.replace(/(\r\n|\n|\r)/gm, "");
-        textToBoard(text);
-        }
 
-        fr.readAsText(this.files[0]);
-        /* textToBoard(fr.result); */
-    })
 
-var player = document.querySelector('#player');
-var movementDirection = [0 , 0];        // [1 , 0] = RIGHT , [-1 , 0] = LEFT , [0 , -1] = UP , [0 , 1] = DOWN
-var faceDirection = 'up';
-var playerCoordinates = [2 , 2];             
-var speed = 2;
-var lastPressed = '';
-var player_x = 20;
-var player_y = 20;
-var player_size = 20;
-var correction_tolerance = 0.1;
-var player_score = 0;
-var player_coins = 0;
-var player_kills = 0;
-var player_moved = false;
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // Display game data on page
 document.querySelector('#score').innerText = player_score;
 document.querySelector('#coins').innerText = player_coins;
 document.querySelector('#kills').innerText = player_kills;
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // The function behind the logic of the game
 function gameLoop(){
     player_moved = playerController();
@@ -235,8 +302,12 @@ function gameLoop(){
         columnController();
     }
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // The function behind player controls
 function playerController(){
     player_x = player_x + movementDirection[0] * speed;
@@ -358,7 +429,11 @@ function playerController(){
         return true;
     return false;
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 // A function that detects what the player is moving on
 function columnController(){
     // Get the column the player is currently on
@@ -385,5 +460,82 @@ function columnController(){
     }
 
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Function that spawns ghosts
+function spawnGhosts(count){
+    console.log('Started Ghost Spawning');
+    while(count > 0){
+        // Set random x_board position and random y_board position
+        var random_x = Math.ceil(Math.random() * game_board.width);
+        var random_y = Math.ceil(Math.random() * game_board.height);
+
+        // Check if the chosen column contains a wall or not
+        if(getColumn(random_x , random_y).querySelector('.wall') == null){
+            // Create a ghost object
+            var ghost = {
+                'id': `ghost_${ghosts.length}`,
+                'x': (random_x - 1) * game_board.column_size,
+                'y': (random_y - 1) * game_board.column_size,
+                'board_x': random_x,
+                'board_y': random_y,
+                'target_x': 0,
+                'target_y': 0,
+                'status': 'wondering',
+                getGhostElement() {         // Get this ghost's HTML element
+                    return document.querySelector(`#${this.id}`);
+                },
+                graphicUpdate() {           // Update the ghost's HTML element's position
+                    var element = document.querySelector(`#${this.id}`);
+                    console.log(element);
+                    element.style.transform = `translate(${this.x}px , ${this.y}px)`;
+                },
+                goTo(target_x , target_y){
+
+                },
+            }
+            // Create the HTML ghost element and give it the id given in ghost object
+            document.querySelector(`#ghost_container`).innerHTML += `<div id="${ghost.id}" class="ghost"></div>`;
+            // Set the insides of the ghost element
+            ghost.getGhostElement().innerHTML = ghost_html_code;
+            // Update the element's position
+            ghost.graphicUpdate();
+            console.log(`Spawned a ghost at ${ghost.board_x},${ghost.board_y}`);
+            // Push the ghost object to the ghosts array
+            ghosts.push(ghost);
+            count--;
+        }else{
+            console.log("Can't Spawn a wall is there!");
+        }
+    }
+    console.log('Finished Ghost Spawning');
+}
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Script Execution
+box_board();
+
+// Loads text files and set's board
+document.getElementById('fileInput')
+    .addEventListener('change', function() {
+        var fr=new FileReader();
+        fr.onload=function(){
+            
+        console.log(fr.result);
+        var text = fr.result.replace(/(\r\n|\n|\r)/gm, "");
+        textToBoard(text);
+        spawnGhosts(10);
+        }
+
+        fr.readAsText(this.files[0]);
+        /* textToBoard(fr.result); */
+    })
 
 setInterval(function ()  {gameLoop()} , GAME_LOOP_INTERVAL);
+/* ------------------------------------------------------------------------------------------------------------------------------ */
