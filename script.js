@@ -13,6 +13,9 @@ var BOARD_SET = false;
 // Load the element in which the game will be rendered
 var canvas_element = document.querySelector("#game_canvas");
 
+// Binary Board | 0 = no Wall , 1 = wall
+var binaryBoard;
+
 
 // This array will hold objects containing information of existing ghosts
 // Ghost Object
@@ -488,7 +491,7 @@ function spawnGhosts(count){
                     element.style.transform = `translate(${this.x}px , ${this.y}px)`;
                 },
                 goTo(target_x , target_y){
-
+                    
                 },
             }
             // Create the HTML ghost element and give it the id given in ghost object
@@ -518,11 +521,55 @@ function toggleAlertMessage(){
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------------------------------------------------------------------ */
-// Alert Message
+// Speech Alert Message
 function playAlertMessage(){
     ALERT_SPEECH_MESSAGE.play();
 }
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Manhattan Distance Equation used to evaluate a path
+// More info here : 
+// https://www.sciencedirect.com/topics/mathematics/manhattan-distance#:~:text=The%20Manhattan%20distance%20is%20defined,which%20is%20its%20L1%2Dnorm.
+function manhattanDistance(start , end){
+    return Math.abs(start[0] - end[0]) + Math.abs(start[1] - end[1]);
+}
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Convert Game Board to a binary matrix | 0 = no Wall , 1 = wall
+function binaryBoardConstructor(){
+    var binaryBoard = [];
+    for(var i = 1; i <= game_board.height; i++){
+        var row = [];
+        for(var y = 1; y <= game_board.width; y++){
+            var column = document.querySelector(`#row_${i}_col_${y}`);
+            if(column.querySelector('.wall')){
+                row.push(1);
+            }else{
+                row.push(0);
+            }
+        }
+        console.log(row);
+        console.log(i);
+        binaryBoard.push(row);
+    }
+    return binaryBoard;
+}
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// A* Algorithm for path finding
+function aStar(start , end){
+    // Visit this webpage to better understand the A* algorithm 
+    // https://dev.to/codesphere/pathfinding-with-javascript-the-a-algorithm-3jlb#:~:text=What%20is%20the%20A*%20algorithm,increase%20its%20performance%20and%20efficiency.
+    
+}
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
@@ -550,6 +597,7 @@ document.getElementById('fileInput')
         spawnGhosts(10);
         toggleAlertMessage();
         ALERT_SPEECH_MESSAGE.pause();
+        binaryBoard = binaryBoardConstructor();
         }
 
         fr.readAsText(this.files[0]);
