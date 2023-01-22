@@ -58,15 +58,6 @@ var player_moved = false;
 
 
 /* ------------------------------------------------------------------------------------------------------------------------------ */
-// Display board data on page
-document.querySelector('#game_width').innerText = game_board.width;
-document.querySelector('#game_height').innerText = game_board.height;
-document.querySelector('#column_size').innerText = game_board.column_size;
-/* ------------------------------------------------------------------------------------------------------------------------------ */
-
-
-
-/* ------------------------------------------------------------------------------------------------------------------------------ */
 // A function that creates the board columns
 function box_board(){
     // Set the game canvas's width to be Horizontal_number_of_columns * Column_width
@@ -513,15 +504,27 @@ function spawnGhosts(count){
     }
     console.log('Finished Ghost Spawning');
 }
+
+function toggleAlertMessage(){
+    var alert_box = document.querySelector(`#alert_box`);
+    alert_box.style.display = 'none';
+}
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
 
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 // Script Execution
+
+// Display board data on page
+document.querySelector('#game_width').innerText = game_board.width;
+document.querySelector('#game_height').innerText = game_board.height;
+document.querySelector('#column_size').innerText = game_board.column_size;
+
+// Create the game board
 box_board();
 
-// Loads text files and set's board
+// Loads text file and set's the board's columns
 document.getElementById('fileInput')
     .addEventListener('change', function() {
         var fr=new FileReader();
@@ -531,6 +534,7 @@ document.getElementById('fileInput')
         var text = fr.result.replace(/(\r\n|\n|\r)/gm, "");
         textToBoard(text);
         spawnGhosts(10);
+        toggleAlertMessage();
         }
 
         fr.readAsText(this.files[0]);

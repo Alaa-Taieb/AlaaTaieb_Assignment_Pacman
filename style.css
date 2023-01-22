@@ -235,3 +235,29 @@ body{
     height: 20px;
 }
 /* INTERFACE END */
+
+/* ALERT BOX START */
+#alert_box{
+    background-color: blue;
+    position: absolute;
+    width: 1000px;
+    height: 500px;
+    z-index: 10;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.alert_message{
+    width: 600px;
+    text-align: center;
+}
+
+#alert_box > img{
+    width: 200px;
+    
+}
+/* ALERT BOX END */
