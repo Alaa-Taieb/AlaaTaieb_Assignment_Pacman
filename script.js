@@ -53,7 +53,6 @@ var lastPressed = '';
 var player_x = 20;
 var player_y = 20;
 var player_size = 20;
-var correction_tolerance = 0.1;
 var player_score = 0;
 var player_coins = 0;
 var player_kills = 0;
@@ -337,30 +336,22 @@ function playerController(){
         // Registering the key press by saving the key to the lastPressed variable
         switch(evt.key){
             case 'w':
-            if(getColumn(playerCoordinates[0] , playerCoordinates[1] - 1).querySelector('.wall')){
-
-            }else{
+            if(!getColumn(playerCoordinates[0] , playerCoordinates[1] - 1).querySelector('.wall')){
                 lastPressed = evt.key;
             }
             break;
         case 'd':
-            if(getColumn(playerCoordinates[0] + 1, playerCoordinates[1]).querySelector('.wall')){
-
-            }else{
+            if(!getColumn(playerCoordinates[0] + 1, playerCoordinates[1]).querySelector('.wall')){
                 lastPressed = evt.key;
             }
             break;
         case 's':
             if(getColumn(playerCoordinates[0] , playerCoordinates[1] + 1).querySelector('.wall')){
-
-            }else{
                 lastPressed = evt.key;
             }
             break;
         case 'a':
             if(getColumn(playerCoordinates[0] - 1 , playerCoordinates[1]).querySelector('.wall')){
-
-            }else{
                 lastPressed = evt.key;
             }
             break;
@@ -568,7 +559,7 @@ function binaryBoardConstructor(){
 function aStar(start , end){
     // Visit this webpage to better understand the A* algorithm 
     // https://dev.to/codesphere/pathfinding-with-javascript-the-a-algorithm-3jlb#:~:text=What%20is%20the%20A*%20algorithm,increase%20its%20performance%20and%20efficiency.
-    
+
 }
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 
