@@ -1,6 +1,9 @@
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 // Global Variables
 
+// Alert speech message
+const ALERT_SPEECH_MESSAGE = new Audio('assets/sound_effects/alert_speech.mp3');
+
 // The game loop call interval in milliseconds
 const GAME_LOOP_INTERVAL = 20;
 // The game's framerate
@@ -505,16 +508,27 @@ function spawnGhosts(count){
     console.log('Finished Ghost Spawning');
 }
 
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Toggle display alert message
 function toggleAlertMessage(){
     var alert_box = document.querySelector(`#alert_box`);
     alert_box.style.display = 'none';
 }
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------------------------------------------------------------------ */
+// Alert Message
+function playAlertMessage(){
+    ALERT_SPEECH_MESSAGE.play();
+}
+
+/* ------------------------------------------------------------------------------------------------------------------------------ */
 
 
 /* ------------------------------------------------------------------------------------------------------------------------------ */
 // Script Execution
+
 
 // Display board data on page
 document.querySelector('#game_width').innerText = game_board.width;
@@ -535,6 +549,7 @@ document.getElementById('fileInput')
         textToBoard(text);
         spawnGhosts(10);
         toggleAlertMessage();
+        ALERT_SPEECH_MESSAGE.pause();
         }
 
         fr.readAsText(this.files[0]);
