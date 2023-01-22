@@ -346,12 +346,12 @@ function playerController(){
             }
             break;
         case 's':
-            if(getColumn(playerCoordinates[0] , playerCoordinates[1] + 1).querySelector('.wall')){
+            if(!getColumn(playerCoordinates[0] , playerCoordinates[1] + 1).querySelector('.wall')){
                 lastPressed = evt.key;
             }
             break;
         case 'a':
-            if(getColumn(playerCoordinates[0] - 1 , playerCoordinates[1]).querySelector('.wall')){
+            if(!getColumn(playerCoordinates[0] - 1 , playerCoordinates[1]).querySelector('.wall')){
                 lastPressed = evt.key;
             }
             break;
