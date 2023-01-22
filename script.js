@@ -130,7 +130,7 @@ function wallGraphicCorrection(x , y){
     }
     if(bottom){
         getColumn(x , y).querySelector('.wall').style.borderBottom = 'none';        // Remove the bottom border of the current wall
-        getColumn(x , y + 1).querySelector('.wall').style.borderTop = 'none';;      // Remove the top border of the bottom wall
+        getColumn(x , y + 1).querySelector('.wall').style.borderTop = 'none';      // Remove the top border of the bottom wall
     }
     if(left){
         getColumn(x , y).querySelector('.wall').style.borderLeft = 'none';          // Remove the left border of the current wall
